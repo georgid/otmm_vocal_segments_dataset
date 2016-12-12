@@ -1,0 +1,15 @@
+
+
+Annotations of vocal segments on different levels:
+
+comments about onsets here:
+https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit?usp=sharing
+
+vocal_sections_anno: tab-separated file
+	audio regions that correspond to sections from score with singing voice present. fetched from sectionLinks and manually checked
+
+vocal_activity_anno: tab-separated 
+	audio regions with singing voice present. for singing voice detection. TODO: manually check
+
+vocal_onsets_anno: tab-separated
+	timestamps for onsets of singing voice. Done by intersecting manually annotated onsets with vocal_sections_anno files. Manually annotated onsets taken from https://github.com/MTG/otmm_audio_score_alignment_dataset/tree/vocal-only-annotation/  
