@@ -4,13 +4,16 @@ Annotations of vocal segments on different levels:
 
 
 vocal_sections_anno: tab-separated file
-	audio regions that correspond to sections from score with singing voice present. fetched from sectionLinks and manually checked
+	audio regions that correspond to sections from score with singing voice present. 
+	fetched from sectionLinks in ``generate_voiced_sections`` from ``scripts/main.py`` and manually checked after that.
 
-vocal_activity_anno: tab-separated 
-	audio regions with singing voice present. for singing voice detection. TODO: manually check
+vocal_anno: tab-separated 
+	audio regions with singing voice present. for singing voice detection. 
+	TODO: create manually
 
 vocal_onsets_anno: tab-separated
-	timestamps for onsets of singing voice. Done by intersecting manually annotated onsets with vocal_sections_anno files. Manually annotated onsets taken from https://github.com/MTG/otmm_audio_score_alignment_dataset/tree/vocal-only-annotation/  
+	timestamps for onsets of singing voice. 
+	Done by intersecting manually annotated onsets with vocal_anno files with script ``generate_voiced_onsets`` in ``scripts/main.py``. Manually annotated onsets taken from https://github.com/MTG/otmm_audio_score_alignment_dataset/tree/vocal-only-annotation/  
 
 beats: 
 	timestamps of beats (annotated only first 60 seconds)
