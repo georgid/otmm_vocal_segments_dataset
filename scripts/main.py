@@ -124,7 +124,8 @@ if __name__ == '__main__': # intersect
 #     pitch_output_dir = sys.argv[1]
     logging.basicConfig(level=logging.DEBUG)
     
-    data_dir = '/Users/joro/Documents/turkish_makam_vocal_segments_dataset/data/'
+    data_dir = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/' 
+    
     
     # take from list https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit?usp=sharing
     list_vocal_sarkis_onset_detected =[

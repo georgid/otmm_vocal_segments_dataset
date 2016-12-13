@@ -18,7 +18,41 @@ import logging
 import mir_eval
 from compmusic.extractors.makam.fetch_tools import fetchNoteOnsetFile, getWork, download_wav
 
-def intersect_section_links(pitch_contour, vocal_intervals):
+# def intersect_section_links(pitch_contour, vocal_intervals):
+#     '''
+#     intersect the given pitch contour with given vocal sections
+#     
+#     Parameters
+#     -------------------
+#     pitch_contour: list of (ts, pitch)
+#         given pitch contour
+#     
+#     vocal_intervals: list, shape=(n,2)
+#         vocal intervals
+#     
+#     Return
+#     -------------------
+#     pitch_contour:  list of (ts, pitch)
+#         pitch contour with zero on non-intersected parts
+#     
+#     
+#     '''  
+#     i = 0 # start at zero frame
+#     for interval in vocal_intervals:
+# 
+#             startTime = interval[0]
+#             endTime = interval[1]
+#             
+#             while pitch_contour[i][0] < startTime : # make zero pitch
+#                 pitch_contour[i][1] = 0.0 
+#                 i+=1
+#                 
+#             while pitch_contour[i][0] <= endTime and i< len(pitch_contour) :
+#                 i+=1
+#     
+#     return pitch_contour
+
+def intersect_section_links(pitch_contour, voiced_intervals):
     '''
     intersect the given pitch contour with given vocal sections
     
@@ -27,7 +61,7 @@ def intersect_section_links(pitch_contour, vocal_intervals):
     pitch_contour: list of (ts, pitch)
         given pitch contour
     
-    vocal_intervals: list, shape=(n,2)
+    voiced_intervals: list, shape=(n,2)
         vocal intervals
     
     Return
@@ -36,22 +70,20 @@ def intersect_section_links(pitch_contour, vocal_intervals):
         pitch contour with zero on non-intersected parts
     
     
-    '''  
-    i = 0 # start at zero frame
-    for interval in vocal_intervals:
-
-            startTime = interval[0]
-            endTime = interval[1]
-            
-            while pitch_contour[i][0] < startTime : # make zero pitch
-                pitch_contour[i][1] = 0.0 
-                i+=1
-                
-            while pitch_contour[i][0] <= endTime and i< len(pitch_contour) :
-                i+=1
-    
-    return pitch_contour
-
+    ''' 
+    pitch_contour = np.array(pitch_contour)
+    timestamps = pitch_contour[:,0]
+    labels = ['voiced'] * len(voiced_intervals)
+    timestamp_labels = mir_eval.util.interpolate_intervals(voiced_intervals, labels, timestamps, fill_value=None) # timestamp_labels correspond to timestamps
+    timestamp_labels = np.array(timestamp_labels)
+    indices_nonvoiced = np.where(timestamp_labels!='voiced')[0]
+    import matplotlib.pyplot as plt
+    plt.plot(pitch_contour[:,1])
+    plt.show()
+    pitch_contour[indices_nonvoiced,1] = 0 # make non-vocal have zero pitch
+    plt.plot(pitch_contour[:,1])
+    plt.show()
+    return pitch_contour   
 
 
 def sectionLinks_to_intervals(sectionLinks):
@@ -165,7 +197,7 @@ def intersect_vocal_onsets(onsets_ts, voiced_intervals):
     for onset_ts, label in zip(onsets_ts,aligned_labels):
         if label == 'voiced': # the rest of the labels will be None
             vocal_onsets_ts.append(onset_ts)
-    return vocal_onsets_ts   
+    return np.array(vocal_onsets_ts)   
 
 
 
