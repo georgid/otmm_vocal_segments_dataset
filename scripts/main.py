@@ -12,7 +12,6 @@ import os
 from intersect_vocal_and_pitch import fetch_voiced_sections
 import logging
 from mir_eval.io import load_delimited, load_intervals
-from pandas.compat.numpy import np_array_datetime64_compat
 VOCAL_SECTIONS_ANNOTATION_EXT = '.vocal_sections_anno'
 VOCAL_ACTIVITY_EXT = '.vocal_anno'
 VOCAL_ONSETS_ANNO = '.vocal_onsets_anno'
@@ -39,14 +38,7 @@ def generate_voiced_pitch_contours(musicbrainzid, output_dir):
 #     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_SECTIONS_ANNOTATION_EXT)
     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_ACTIVITY_EXT)
 
-    try:
-        voiced_intervals = load_intervals(file_name)
-    except: # assume a middle column present, this happens on expoert of regions layer in SV
-         starts, values, durations = load_delimited(file_name, [float, float, float])
-         # Stack into an interval matrix
-         starts = np.array(starts)
-         durations = np.array(durations)
-         voiced_intervals = np.array([starts, starts+durations]).T
+    voiced_intervals = load_voiced_segments(file_name)
             
 #     ###### 2.  generate vocal pitch annotation
     intersected_pitch_series = generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True)
@@ -64,18 +56,12 @@ def generate_voiced_pitch_contours(musicbrainzid, output_dir):
 
 
    
+
 def generate_voiced_onsets(musicbrainzid, output_dir):
     #### 1. voiced intervals
 #     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_SECTIONS_ANNOTATION_EXT)
     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_ACTIVITY_EXT)
-    try:
-        voiced_intervals = load_intervals(file_name)
-    except: # assume a middle column present, this happens on expoert of regions layer in SV
-         starts, values, durations = load_delimited(file_name, [float, float, float])
-         # Stack into an interval matrix
-         starts = np.array(starts)
-         durations = np.array(durations)
-         voiced_intervals = np.array([starts, starts+durations]).T
+    voiced_intervals = load_voiced_segments(file_name)
     
     ###### 3. generate vocal onset annotations
     vocal_onsets_ts = generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=False)
@@ -86,6 +72,22 @@ def generate_voiced_onsets(musicbrainzid, output_dir):
     
     
     
+
+
+def load_voiced_segments(file_name):
+    '''
+    convenience function
+    '''
+    try:
+        voiced_intervals = load_intervals(file_name)
+    except:
+        starts, values, durations = load_delimited(file_name, [float, float, float])
+        # Stack into an interval matrix
+        starts = np.array(starts)
+        durations = np.array(durations)
+        voiced_intervals = np.array([starts, starts + durations]).T # assume a middle column present, this happens on expoert of regions layer in SV
+    return voiced_intervals
+
 
 def store_pitch_anno(musicbrainzid, intersected_pitch_series, pitch_dir):
     '''
@@ -136,20 +138,20 @@ if __name__ == '__main__': # intersect
 #     '727cff89-392f-4d15-926d-63b2697d7f3f',
 #     'b49c633c-5059-4658-a6e0-9f84a1ffb08b',
 #     '567b6a3c-0f08-42f8-b844-e9affdc9d215',
-#     'feda89e3-a50d-4ff8-87d4-c1e531cc1233',
+    'feda89e3-a50d-4ff8-87d4-c1e531cc1233',
 #     'eaea7f6b-fb94-4982-9ac7-162f1503182a',
 #     '6d892b77-9733-4ba7-a497-646c969c72b8',
 #     '8c7eccf5-0d9e-4f33-89f0-87e95b7da970',
 #     '0b45417b-acb4-4f8a-b180-5ad45be889af',
 #     '6d97f1f8-5f05-4c5c-b1ab-2757fdc3e746',
-    '9c26ff74-8541-4282-8a6e-5ba9aa5cc8a1', 
+#     '9c26ff74-8541-4282-8a6e-5ba9aa5cc8a1', 
 #     '2ec806b4-7df2-4fd4-9752-140a0bcc9730'
     ]
    
     for recID in list_vocal_sarkis_onset_detected:
         output_dir = data_dir + recID + '/' 
 #         generate_voiced_sections(recID, output_dir)
-#         generate_voiced_onsets(recID, output_dir)
-        generate_voiced_pitch_contours(recID, output_dir)
+        generate_voiced_onsets(recID, output_dir)
+#         generate_voiced_pitch_contours(recID, output_dir)
 
 
