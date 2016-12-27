@@ -26,7 +26,7 @@ def intersect_section_links(pitch_contour, voiced_intervals):
     
     Parameters
     -------------------
-    pitch_contour: list of (ts, pitch)
+    pitch_contour: list of (ts, pitch) tuples
         given pitch contour
     
     voiced_intervals: list, shape=(n,2)
