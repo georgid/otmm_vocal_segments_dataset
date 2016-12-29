@@ -9,6 +9,7 @@ import shutil
 
 offset = 1.135
 offset = 4.16
+offset = 0
 fout = NamedTemporaryFile(delete=False)
 URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/f5a89c06-d9bc-4425-a8e6-0f44f7c108ef/f5a89c06-d9bc-4425-a8e6-0f44f7c108ef.beats'
 URI_target = URI + '_'
