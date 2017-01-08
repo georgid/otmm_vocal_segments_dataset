@@ -146,13 +146,14 @@ if __name__ == '__main__': # intersect
 #     '6d97f1f8-5f05-4c5c-b1ab-2757fdc3e746',
 #     '9c26ff74-8541-4282-8a6e-5ba9aa5cc8a1', 
 #     '2ec806b4-7df2-4fd4-9752-140a0bcc9730',
-    '92ef6776-09fa-41be-8661-025f9b33be4f'
+#     '92ef6776-09fa-41be-8661-025f9b33be4f',
+    'c7a31756-a7d5-4882-bdf7-9c6b23493597'
     ]
    
     for recID in list_vocal_sarkis_onset_detected:
         output_dir = data_dir + recID + '/' 
-#         generate_voiced_sections(recID, output_dir)
-        generate_voiced_onsets(recID, output_dir)
+        generate_voiced_sections(recID, output_dir)
+#         generate_voiced_onsets(recID, output_dir)
 #         generate_voiced_pitch_contours(recID, output_dir)
 
 

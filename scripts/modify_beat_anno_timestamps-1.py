@@ -9,12 +9,14 @@ import shutil
 
 offset = 1.135
 offset = 4.16
-offset = 0
+offset = 0.057
 fout = NamedTemporaryFile(delete=False)
 URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/f5a89c06-d9bc-4425-a8e6-0f44f7c108ef/f5a89c06-d9bc-4425-a8e6-0f44f7c108ef.beats'
 URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/92ef6776-09fa-41be-8661-025f9b33be4f/92ef6776-09fa-41be-8661-025f9b33be4f.beats'
+URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/c7a31756-a7d5-4882-bdf7-9c6b23493597/c7a31756-a7d5-4882-bdf7-9c6b23493597.beats'
 
-URI_target = URI + '_'
+
+URI_target = URI
 with open(URI,'rb') as fin, fout:
     w = writer(fout, delimiter='\t')
 
