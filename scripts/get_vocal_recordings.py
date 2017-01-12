@@ -5,11 +5,13 @@ Created on Oct 5, 2016
 '''
 
 list_long_SAZ = {'cab08727-d5c2-4fda-9d96-d107915a85ec'}
-list_erroneous_vocal = {'764c2b10-90b8-44b8-8254-2992302f8a2b'}
+list_erroneous_vocal = {'764c2b10-90b8-44b8-8254-2992302f8a2b', 
+                        'd0103184-e38a-4316-bd6e-520ca3ec69d2'
+                        } # detected sections are not vocal
 list_other_problems = {'67e7422b-24d8-420a-961f-652e6cf66ca9'}
 list_not_correct_lyric_linking = {'6fdc4617-e491-44b2-998c-3bc00bc2085', 
                                   
-                                  }
+                                  } # same melody different lyrics type of problem
 
 
 
