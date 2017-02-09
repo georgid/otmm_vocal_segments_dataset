@@ -7,16 +7,32 @@ Created on Oct 7, 2016
 from intersect_vocal_and_pitch import     generate_vocal_segments
 import numpy as np
 from get_vocal_recordings import intersect_vocal_sarki_symbTr,\
-    get_recIDs_OK
+    get_recIDs_OK_vor_vocal
 import os
 from intersect_vocal_and_pitch import fetch_voiced_sections
 import logging
 from mir_eval.io import load_delimited, load_intervals
+import json
 VOCAL_SECTIONS_ANNOTATION_EXT = '.vocal_sections_anno'
 VOCAL_ACTIVITY_EXT = '.vocal_anno'
 VOCAL_ONSETS_ANNO = '.vocal_onsets_anno'
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+def load_onset_anno_recs(): 
+    '''
+    # rec IDs of sarkis with annotated vocal note onsets
+    '''
+    import csv
+    recIDs_onsets = []
+    with open('/home/georgid/Downloads/list_sarkis.csv', 'r') as f:
+        
+        reader = csv.reader(f)
+        for row in reader:
+            recIDs_onsets.append(row[0])
+    return recIDs_onsets
+
 
 def generate_voiced_sections(musicbrainzid, output_dir):
     
@@ -36,7 +52,7 @@ def generate_voiced_sections(musicbrainzid, output_dir):
 def generate_voiced_pitch_contours(musicbrainzid, output_dir):
     #### 1. voiced intervals
 #     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_SECTIONS_ANNOTATION_EXT)
-    file_name = os.path.join(output_dir, musicbrainzid + VOCAL_ACTIVITY_EXT)
+    file_name = os.path.join(output_dir + '/' + musicbrainzid, musicbrainzid + VOCAL_ACTIVITY_EXT)
 
     voiced_intervals = load_voiced_segments(file_name)
             
@@ -115,9 +131,6 @@ def store_time_anno(musicbrainzid, timestamps, output_dir):
     logging.warning('written file {}'.format(file_name))
 
 
-
-        
-
     
 
 if __name__ == '__main__': # intersect 
@@ -126,8 +139,8 @@ if __name__ == '__main__': # intersect
 #     pitch_output_dir = sys.argv[1]
     logging.basicConfig(level=logging.DEBUG)
     
+    ############### with annotated note onsets
     data_dir = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/' 
-    
     
     # take from list https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit?usp=sharing
     list_vocal_sarkis_onset_detected =[
@@ -150,10 +163,12 @@ if __name__ == '__main__': # intersect
     'c7a31756-a7d5-4882-bdf7-9c6b23493597'
     ]
    
+
     for recID in list_vocal_sarkis_onset_detected:
         output_dir = data_dir + recID + '/' 
         generate_voiced_sections(recID, output_dir)
 #         generate_voiced_onsets(recID, output_dir)
-#         generate_voiced_pitch_contours(recID, output_dir)
+
+
 
 

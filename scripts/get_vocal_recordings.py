@@ -4,7 +4,10 @@ Created on Oct 5, 2016
 @author: georgid
 '''
 
+# SAZ is too long
 list_long_SAZ = {'cab08727-d5c2-4fda-9d96-d107915a85ec'}
+
+# vocal and non-vocal sections are wrongly detected
 list_erroneous_vocal = {'764c2b10-90b8-44b8-8254-2992302f8a2b', 
                         'd0103184-e38a-4316-bd6e-520ca3ec69d2'
                         } # detected sections are not vocal
@@ -84,7 +87,7 @@ def intersect_vocal_sarki_symbTr():
         
     return sarki_vocal_rec_ids
 
-def get_recIDs_OK(sarki_vocal_rec_ids):
+def get_recIDs_OK_vor_vocal(sarki_vocal_rec_ids):
     '''
     get recordings OK for vocal/non-vocal detection
     after listening test and manually created lists
@@ -109,7 +112,7 @@ def doit_for_vocal_nonvocal_extractor(audio_output_Dir, pitch_output_dir):
     
     sarki_vocal_rec_ids = intersect_vocal_sarki_symbTr()
 
-    recs_OK = get_recIDs_OK(sarki_vocal_rec_ids)
+    recs_OK = get_recIDs_OK_vor_vocal(sarki_vocal_rec_ids)
     
     for rec_ID in recs_OK:
         print 'http://dunya.compmusic.upf.edu/makam/recording/' + str(sarki_rec_id)
