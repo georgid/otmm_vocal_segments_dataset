@@ -6,29 +6,34 @@
 from csv import reader, writer
 from tempfile import NamedTemporaryFile
 import shutil
+import sys
+from load_data import load_excerpt
+import os
 
-offset = 1.135
-offset = 4.16
-offset = 0.057
+if len(sys.argv) != 3:
+    sys.exit('Syntax: command <data/MBID_dir> <MBID>')
+data_dir = sys.argv[1]
+MBID = sys.argv[2]
+
+start_ts, end_ts = load_excerpt(data_dir)
+URI = os.path.join(data_dir, MBID + '.beats') 
+
 fout = NamedTemporaryFile(delete=False)
-URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/f5a89c06-d9bc-4425-a8e6-0f44f7c108ef/f5a89c06-d9bc-4425-a8e6-0f44f7c108ef.beats'
-URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/92ef6776-09fa-41be-8661-025f9b33be4f/92ef6776-09fa-41be-8661-025f9b33be4f.beats'
-URI = '/Users/joro/Documents/Phd/UPF/voxforge/myScripts/turkish_makam_vocal_segments_dataset/data/c7a31756-a7d5-4882-bdf7-9c6b23493597/c7a31756-a7d5-4882-bdf7-9c6b23493597.beats'
 
 
-URI_target = URI
+URI_target = URI + '_shifted'
 with open(URI,'rb') as fin, fout:
-    w = writer(fout, delimiter='\t')
+    w = writer(fout, delimiter=',')
 
     reader = reader(fin, delimiter=',')
     rows = [r for r in reader]
     
     for row in rows:
-            row[0]= float(row[0]) + offset
+            row[0]= float(row[0]) + start_ts
             w.writerow(row)
 # rename to original file name or to another name
 shutil.move(fout.name, URI_target)            
-
+print 'written file ' + URI_target
 
 
 
