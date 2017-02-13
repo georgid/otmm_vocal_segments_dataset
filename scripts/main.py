@@ -73,18 +73,24 @@ def generate_voiced_pitch_contours(musicbrainzid, output_dir):
 
    
 
-def generate_voiced_onsets(musicbrainzid, output_dir):
+def generate_voiced_notes(musicbrainzid, output_dir):
     #### 1. voiced intervals
 #     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_SECTIONS_ANNOTATION_EXT)
     file_name = os.path.join(output_dir, musicbrainzid + VOCAL_ACTIVITY_EXT)
     voiced_intervals = load_voiced_segments(file_name)
     
     ###### 3. generate vocal onset annotations
-    vocal_onsets_ts = generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=False)
-    if vocal_onsets_ts == None or len(vocal_onsets_ts) == 0:
+    vocal_notes, onsets_ts_URI = generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=False)
+    if vocal_notes == None or len(vocal_notes) == 0:
             logging.warning('no vocal onsets  in {}'.format(musicbrainzid))
     
-    store_time_anno(musicbrainzid, vocal_onsets_ts, output_dir)
+    import csv
+    URI_vocal_onsets = onsets_ts_URI[:-4] + '_vocal.txt'
+    with open(URI_vocal_onsets,'w') as f:
+              writer = csv.writer(f, delimiter='\t')
+              writer.writerows(vocal_notes)
+    print 'written file + ' +  URI_vocal_onsets
+#     store_time_anno(musicbrainzid, vocal_notes, output_dir)
     
     
     
@@ -167,7 +173,7 @@ if __name__ == '__main__': # intersect
     for recID in list_vocal_sarkis_onset_detected:
         output_dir = data_dir + recID + '/' 
         generate_voiced_sections(recID, output_dir)
-#         generate_voiced_onsets(recID, output_dir)
+#         generate_voiced_notes(recID, output_dir)
 
 
 

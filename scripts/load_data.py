@@ -7,8 +7,8 @@ import os
 import mir_eval
 import numpy as np
 
-def load_excerpt(dir_name):
-    excerpt_URI = os.path.join(dir_name, 'excerpt.txt')
+def load_excerpt(URI_excerpt):
+    excerpt_URI = os.path.join(URI_excerpt)
     start_ts, end_ts, _ = mir_eval.io.load_delimited(excerpt_URI, [float,float,str],delimiter='\t')
     return float(start_ts[0]), float(end_ts[0])
 

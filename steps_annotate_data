@@ -1,0 +1,31 @@
+
+symbTr_name=kurdilihicazkar--sarki--aksak--muntazir_tesrifine--haci_arif_bey;
+MBID=f87c244a-c545-4756-a13b-ccc213a1d5dc;
+name_andre=13_30013_06_-_kurdilihicazkar--sarki--aksak--muntazir_tesrifine--haci_arif_bey
+
+
+#get mp3
+python ~/workspace/otmm_vocal_segments_dataset/scripts/get_mp3.py MBID ~/workspace/otmm_vocal_segments_dataset/data/
+
+
+
+# get annotated note onsets and intersect with vocal
+python /home/georgid/workspace/otmm_vocal_segments_dataset/scripts/genrate_voiced_aligned_notes.py $MBID /home/georgid/workspace/otmm_vocal_segments_dataset/data/$MBID/
+# or just get onsets
+python /home/georgid/workspace/otmm_audio_score_alignment_dataset/extras/alignednotesjson_to_txt.py $MBID
+
+
+
+# modify audacity
+audacity ~/Documents/TurkishMakam/audio/${name_andre}.wav ~/workspace/otmm_vocal_segments_dataset/data/$MBID/$MBID.wav
+
+sublime-text ~/workspace/otmm_vocal_segments_dataset/data/$MBID/excerpt.txt
+
+
+sonic-visualiser ~/Documents/TurkishMakam/audio/${name_andre}.wav  ~/Documents/TurkishMakam/annotations/beats/${name_andre}.beats  &
+
+# modify time of beats according to excerpt
+python modify_beat_anno_timestamps-1.py ~/Documents/TurkishMakam/annotations/beats/${name_andre}.beats  ~/workspace/otmm_vocal_segments_dataset/data/$MBID/excerpt.txt ~/workspace/otmm_vocal_segments_dataset/data/$MBID $MBID
+
+# open in SV
+sonic-visualiser ~/workspace/otmm_vocal_segments_dataset/data//$MBID/$MBID.wav  /home/georgid/workspace/otmm_audio_score_alignment_dataset/data/${symbTr_name}/${MBID}/alignedNotes_vocal.txt ~/workspace/otmm_vocal_segments_dataset/data//$MBID/$MBID.beats  ~/workspace/otmm_vocal_segments_dataset/data//$MBID/$MBID.vocal_anno &

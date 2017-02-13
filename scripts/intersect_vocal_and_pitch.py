@@ -13,6 +13,7 @@ import subprocess
 import sys
 from mir_eval.io import load_intervals, load_delimited
 import tempfile
+from alignednotesjson_to_txt import aligned_notes_to_json
 dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 import logging
 import mir_eval
@@ -70,7 +71,7 @@ def sectionLinks_to_intervals(sectionLinks):
 # parse section links 
 # sections_URI = '/home/georgid/Downloads/derivedfiles_ba1dc923-9b0e-4b6b-a306-346bd5438d35/ba1dc923-9b0e-4b6b-a306-346bd5438d35-jointanalysis-0.1-sections-1.json'
 
-def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True):
+def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True, from_automatic_alignment=True):
     '''
     make annotation of vocal Vs novocal by intersecting  extracted pitch and section links
     NOTE: intrasection SAZ interludes will remain marked falsely as vocal, so do a successive check by listening
@@ -99,22 +100,26 @@ def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True):
             return None
         selected_vocal_onsets =  intersect_section_links(pitch_series, voiced_intervals) # onsets with pitch
     
-        
-    else: # fetch onsets from annotation
-        dir = tempfile.mkdtemp()
+    else: 
+        if from_automatic_alignment:
+            onsets_ts_URI = aligned_notes_to_json(musicbrainzid)  
+        else: # fetch onsets from annotation
+            dir = tempfile.mkdtemp()
+            try:
+                onsets_ts_URI = fetchNoteOnsetFile(musicbrainzid, dir , 'alignedNotes.txt') # annotated 
+    #             onsets_ts_URI = '/Users/joro/Documents/lyrics-2-audio-test-data/' +  musicbrainzid  + '/' + musicbrainzid + '.vocal_onsets.pYIN' # estimated
+            except:
+                print 'No alignedNotes.txt for recording. Check internet connection ' + str(musicbrainzid)
+                return None
         try:
-            onsets_ts_URI = fetchNoteOnsetFile(musicbrainzid, dir , 'alignedNotes.txt') # annotated 
-#             onsets_ts_URI = '/Users/joro/Documents/lyrics-2-audio-test-data/' +  musicbrainzid  + '/' + musicbrainzid + '.vocal_onsets.pYIN' # estimated
-        except:
-            print 'No alignedNotes.txt for recording. Check internet connection ' + str(musicbrainzid)
-            return None
-        try:
-            onsets_ts, _, _, _ = load_delimited(onsets_ts_URI, [float, float, float, str])  # annotated with SV regions layer with last column note names
+            onsets_ts, offset_ts, pitch, note_number = load_delimited(onsets_ts_URI, [float, float, float, int])  # annotated with SV regions layer with last column note names
+            notes = zip(onsets_ts, offset_ts, pitch, note_number)
         except: 
             onsets_ts, _, _ = load_delimited(onsets_ts_URI, [float, float, float])  # same but without column for note names 
-        selected_vocal_onsets = intersect_vocal_onsets(onsets_ts, voiced_intervals) # vocal onsets 
         
-    return selected_vocal_onsets
+        selected_vocal_onsets = intersect_vocal_onsets(onsets_ts, notes, voiced_intervals) # vocal onsets 
+        
+    return selected_vocal_onsets, onsets_ts_URI
 
 
 def fetch_voiced_sections(musicbrainzid):
@@ -137,7 +142,7 @@ def fetch_voiced_sections(musicbrainzid):
 
 
 
-def intersect_vocal_onsets(onsets_ts, voiced_intervals):
+def intersect_vocal_onsets(onsets_ts, notes, voiced_intervals):
     '''
     intersect onsets (could be annotated) with intervals 
     and return only the ones within the given intervals
@@ -153,15 +158,25 @@ def intersect_vocal_onsets(onsets_ts, voiced_intervals):
     vocal_onsets
      
     '''
-    vocal_onsets_ts = []
+    vocal_notes = []
     
-    labels = ['voiced'] * len(voiced_intervals)
-    aligned_labels = mir_eval.util.interpolate_intervals(voiced_intervals, labels, onsets_ts, fill_value=None)
-    for onset_ts, label in zip(onsets_ts,aligned_labels):
-        if label == 'voiced': # the rest of the labels will be None
-            vocal_onsets_ts.append(onset_ts)
-    return np.array(vocal_onsets_ts)   
+    voiced_and_nonvoiced_intervals, labels  = add_novocal_intervals(voiced_intervals)   
+    aligned_labels = mir_eval.util.interpolate_intervals(voiced_and_nonvoiced_intervals, labels, onsets_ts, fill_value=None)
+    for note, label in zip(notes,aligned_labels):
+        if label == 'vocal': # the rest of the labels will be None
+            vocal_notes.append(note)
+    return np.array(vocal_notes)   
 
 
-
+def add_novocal_intervals(voiced_intervals):
+    voiced_boundaries = mir_eval.util.intervals_to_boundaries(voiced_intervals)
+    voiced_boundaries = np.insert(voiced_boundaries, 0, -1) # prepend -1
+    voiced_boundaries = np.append(voiced_boundaries,200) # append some final ts
+       
+        ##### assign vocal and novocal labels
+    boundary_labels = ['vocal'] * len(voiced_boundaries)
+    for i in range(0,len(boundary_labels),2):
+            boundary_labels[i] = 'novocal'
+    voiced_intervals2 = mir_eval.util.boundaries_to_intervals(voiced_boundaries)
+    return voiced_intervals2, boundary_labels
 

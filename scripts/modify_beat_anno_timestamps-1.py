@@ -10,19 +10,20 @@ import sys
 from load_data import load_excerpt
 import os
 
-if len(sys.argv) != 3:
-    sys.exit('Syntax: command <data/MBID_dir> <MBID>')
-data_dir = sys.argv[1]
-MBID = sys.argv[2]
+if len(sys.argv) != 5:
+    sys.exit('Syntax: command <URI.beats> <URI.excerpt> <output_dir> <MBID>')
+uri_excerpt = sys.argv[2]
+MBID = sys.argv[4]
 
-start_ts, end_ts = load_excerpt(data_dir)
-URI = os.path.join(data_dir, MBID + '.beats') 
+
+start_ts, end_ts = load_excerpt(uri_excerpt)
+URI_beats = sys.argv[1]
 
 fout = NamedTemporaryFile(delete=False)
 
 
-URI_target = URI + '_shifted'
-with open(URI,'rb') as fin, fout:
+URI_target = os.path.join( sys.argv[3],   MBID+ '.beats' )
+with open(URI_beats,'rb') as fin, fout:
     w = writer(fout, delimiter=',')
 
     reader = reader(fin, delimiter=',')
