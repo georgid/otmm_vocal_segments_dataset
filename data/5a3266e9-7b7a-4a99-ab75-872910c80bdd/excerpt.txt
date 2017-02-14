@@ -1,1 +1,1 @@
-0	60	first_one_minute
+3.027	64	first_one_minute
