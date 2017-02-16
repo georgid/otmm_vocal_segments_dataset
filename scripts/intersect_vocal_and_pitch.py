@@ -14,6 +14,7 @@ import sys
 from mir_eval.io import load_intervals, load_delimited
 import tempfile
 from alignednotesjson_to_txt import aligned_notes_to_json
+from load_data import load_aligned_notes
 dunya.set_token("69ed3d824c4c41f59f0bc853f696a7dd80707779")
 import logging
 import mir_eval
@@ -71,7 +72,7 @@ def sectionLinks_to_intervals(sectionLinks):
 # parse section links 
 # sections_URI = '/home/georgid/Downloads/derivedfiles_ba1dc923-9b0e-4b6b-a306-346bd5438d35/ba1dc923-9b0e-4b6b-a306-346bd5438d35-jointanalysis-0.1-sections-1.json'
 
-def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True, from_automatic_alignment=True):
+def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True, from_automatic_alignment=False):
     '''
     make annotation of vocal Vs novocal by intersecting  extracted pitch and section links
     NOTE: intrasection SAZ interludes will remain marked falsely as vocal, so do a successive check by listening
@@ -81,16 +82,15 @@ def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True, fro
     for_pitch: boolean
         True: for pitch (which is essentially onsets with assigned pitch)
         False: for onsets
-    
+        
+    from_automatic_alignment: 
+        if true, get alignment from Sertan's score-to-audio alignment. Careful not to override some existing onset annotation
+        if not true look for automatically annotated onsets. 
     Returns
     ----------------------
     intersected_pitch_contour: nd.array
         pitch contour of only vocal sections
     '''
-
-    
-    
-    
     if for_pitch: # get pitch from best algorithm. assume it is best estimate of tru e pitch contour
         try:
             pitch_data = dunya.docserver.get_document_as_json(musicbrainzid, "jointanalysis", "pitch", 1, version="0.1")
@@ -111,12 +111,9 @@ def generate_vocal_segments(musicbrainzid, voiced_intervals, for_pitch=True, fro
             except:
                 print 'No alignedNotes.txt for recording. Check internet connection ' + str(musicbrainzid)
                 return None
-        try:
-            onsets_ts, offset_ts, pitch, note_number = load_delimited(onsets_ts_URI, [float, float, float, int])  # annotated with SV regions layer with last column note names
-            notes = zip(onsets_ts, offset_ts, pitch, note_number)
-        except: 
-            onsets_ts, _, _ = load_delimited(onsets_ts_URI, [float, float, float])  # same but without column for note names 
         
+#         onsets_ts_URI = '/Users/joro/workspace/otmm_audio_score_alignment_dataset/data/ussak--sarki--duyek--aksam_oldu_huzunlendim--semahat_ozdenses/92ef6776-09fa-41be-8661-025f9b33be4f/alignedNotes.txt'
+        onsets_ts, notes = load_aligned_notes(onsets_ts_URI)
         selected_vocal_onsets = intersect_vocal_onsets(onsets_ts, notes, voiced_intervals) # vocal onsets 
         
     return selected_vocal_onsets, onsets_ts_URI
@@ -169,9 +166,10 @@ def intersect_vocal_onsets(onsets_ts, notes, voiced_intervals):
 
 
 def add_novocal_intervals(voiced_intervals):
+    TS_AT_END_OF_REC = 10000
     voiced_boundaries = mir_eval.util.intervals_to_boundaries(voiced_intervals)
     voiced_boundaries = np.insert(voiced_boundaries, 0, -1) # prepend -1
-    voiced_boundaries = np.append(voiced_boundaries,200) # append some final ts
+    voiced_boundaries = np.append(voiced_boundaries,TS_AT_END_OF_REC) # append some final ts
        
         ##### assign vocal and novocal labels
     boundary_labels = ['vocal'] * len(voiced_boundaries)

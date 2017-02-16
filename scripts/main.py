@@ -85,7 +85,7 @@ def generate_voiced_notes(musicbrainzid, output_dir):
             logging.warning('no vocal onsets  in {}'.format(musicbrainzid))
     
     import csv
-    URI_vocal_onsets = onsets_ts_URI[:-4] + '_vocal.txt'
+    URI_vocal_onsets = onsets_ts_URI[:-4] + '_vocal.txt' # aligned_notes_vocal
     with open(URI_vocal_onsets,'w') as f:
               writer = csv.writer(f, delimiter='\t')
               writer.writerows(vocal_notes)

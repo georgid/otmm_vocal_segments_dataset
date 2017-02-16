@@ -1,1 +1,1 @@
-32.004	101	first_one_minute
+32.004	95	first_one_minute
