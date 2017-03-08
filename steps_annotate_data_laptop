@@ -1,34 +1,10 @@
-#see https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit#gid=0
-
-### This is the same script as steps_annotate_data_laptop but with paths for my work computer 
+from https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit#gid=0
 
 
-
-
-
-symbTr_name=hisarbuselik--sarki--aksak--aman_ey--ii_mahmud;
-MBID=5a3266e9-7b7a-4a99-ab75-872910c80bdd;
-name_andre=18_30018_08_-_hisarbuselik--sarki--aksak--aman_ey_suh-i--ii._mahmut
-
-# this has to be run again
-symbTr_name=muhayyerkurdi--sarki--duyek--var_mi_hacet--nikogos_aga;
-MBID=b244d4e3-2cfb-4475-98d3-73e2d96271f7;
-name_andre=22_32022_13--muhayyerkurdi--sarki--duyek--var_mi_hacet--nikogos_aga
-
-# not OK
-symbTr_name=neva--sarki--duyek--ben_yururum--selahaddin_pinar;
-MBID=a2e650dc-8822-4647-9f4c-c41c0f81b601;
-name_andre=23_32023_13--neva--sarki--duyek--ben_yururum--selahaddin_pinar
-
-# 
-symbTr_name=sehnaz--sarki--aksak--bir_nevcivane--iii_selim;
-MBID=7eefe15e-6493-472b-ba88-ecfd62ffdc1d;
-name_andre=19_30019_08--sehnaz--sarki--aksak--bir_nevcivane--iii._selim
 
 
 #get mp3
 python ~/workspace/otmm_vocal_segments_dataset/scripts/get_mp3.py MBID ~/workspace/otmm_vocal_segments_dataset/data/
-
 
 
 
@@ -47,7 +23,7 @@ python ~/workspace/otmm_vocal_segments_dataset/scripts/modify_beat_anno_timestam
 
 
 # get annotated note onsets and intersect with vocal
-python /home/georgid/workspace/otmm_vocal_segments_dataset/scripts/genrate_voiced_aligned_notes.py $MBID /home/georgid/workspace/otmm_vocal_segments_dataset/data/$MBID/
+python ~/workspace/otmm_vocal_segments_dataset/scripts/genrate_voiced_aligned_notes.py $MBID ~/workspace/otmm_vocal_segments_dataset/data/$MBID/
 # or just get onsets
 python /home/georgid/workspace/otmm_audio_score_alignment_dataset/extras/alignednotesjson_to_txt.py $MBID
 

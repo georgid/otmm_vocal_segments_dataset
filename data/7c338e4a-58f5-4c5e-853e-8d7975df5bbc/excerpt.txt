@@ -1,1 +1,1 @@
-0.025	60	first_one_minute
+0.025	44.7	until_choir

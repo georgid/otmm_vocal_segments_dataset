@@ -1,7 +1,11 @@
 		
 Annotations of vocal segments in Turkish Makam on different levels.  
-comments about dataset  here:
+------------------------------------------------------------
+
+status of dataset here:
 https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit?usp=sharing
+
+
 
 # Annotation levels:
 ## vocal_sections_anno: tab-separated file
@@ -32,5 +36,9 @@ cp ~/Documents/TurkishMakam/an data/<MBID>
 ## wav file (download from dunya )
 `python scripts/get_mp3.py a2e650dc-8822-4647-9f4c-c41c0f81b601 data/`
 
+
+---------------------------------
+FOR MORE DEATAILS ON how to generate each annotation see: 
+see `steps_annotate_data`
 
 
