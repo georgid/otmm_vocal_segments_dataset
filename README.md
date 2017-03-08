@@ -1,11 +1,7 @@
 		
 Annotations of vocal segments in Turkish Makam on different levels.  
-------------------------------------------------------------
-
-status of dataset here:
+comments about dataset  here:
 https://docs.google.com/spreadsheets/d/1f9wyxB6emGHvVGUhIjNQwSxxhOJhPAdNzA2BieyKVXw/edit?usp=sharing
-
-
 
 # Annotation levels:
 ## vocal_sections_anno: tab-separated file
@@ -19,7 +15,7 @@ TODO: create manually
 ## vocal_onsets_anno: tab-separated
 timestamps for onsets of singing voice. 
 
-Done by intersecting automatic aligned onsets with vocal_anno files with script `genrate_voiced_aligned_notes` 
+Done by intersecting automatic aligned onsets with vocal_anno files with script `genrate_voiced_aligned_notes	` 
 
 Then manually adjust onsets in SV and push new file with extension .alignedNotes_vocal.txt to 
 https://github.com/MTG/otmm_audio_score_alignment_dataset/tree/vocal-only-annotation/  
@@ -36,9 +32,5 @@ cp ~/Documents/TurkishMakam/an data/<MBID>
 ## wav file (download from dunya )
 `python scripts/get_mp3.py a2e650dc-8822-4647-9f4c-c41c0f81b601 data/`
 
-
----------------------------------
-FOR MORE DEATAILS ON how to generate each annotation see: 
-see `steps_annotate_data`
 
 
